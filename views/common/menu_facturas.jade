@@ -1,0 +1,17 @@
+#sidebar.page-sidebar
+	.sidebar-header-wrapper
+		input.searchinput(type='text')
+		i.searchicon.fa.fa-search
+		.searchhelper Search Reports, Charts, Emails or Notifications
+	ul.nav.sidebar-menu
+		li
+			a(href='#' onclick='logout()') Logout
+		li
+			a(href='?page=index')
+				i.menu-icon.glyphicon.glyphicon-home
+				span.menu-text Inicio
+		
+script.
+	function logout(){
+		location.href="http://186.159.114.233:3140/web?page=logout"
+	}

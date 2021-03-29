@@ -1,0 +1,20 @@
+mixin form(form, name)
+  form
+    each b, i in form.inputs
+      div(class='form-group col-md-#{b.size} float-label-control')
+        case b.ftype
+          when "select"
+            select(id="#{b.id}",class="col-md-12", style="#{b.data.style}")
+              option(value="#") #{b.placeholder}
+              each o, j in b.data.options
+                option(value="#{o.value}") #{o.name}
+          when "textarea" 
+            .float-label-control
+              label(id="#{b.id}",for="") #{b.placeholder}
+              textarea(id="#{b.id}",cols="#{b.data.cols}", rows="#{b.data.rows}", style="#{b.data.style}", placeholder="#{b.placeholder}")
+          when "button"
+            button.btn.btn-blue(id="#{id}",type='button', onclick="#{b.data.function}", style="#{b.style}") #{b.placeholder}
+          default
+            .float-label-control
+              label(id="#{b.id}",for="") #{b.placeholder}
+              input.form-control(id="#{b.id}",type="#{b.data.ftype}", placeholder="#{b.placeholder}", style="#{b.data.style}")

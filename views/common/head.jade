@@ -1,0 +1,32 @@
+head
+	meta(charset='utf-8')
+	title BitDefender
+	meta(name='description', content='')
+	meta(name='viewport', content='width=device-width, initial-scale=1.0')
+	meta(http-equiv='X-UA-Compatible', content='IE=edge')
+	meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
+	link(rel='shortcut icon', href='assets/img/favicon.png', type='image/x-icon')
+	link(href='assets/css/bootstrap.min.css', rel='stylesheet')
+	link#bootstrap-rtl-link(href='', rel='stylesheet')
+	link(href='assets/css/font-awesome.min.css', rel='stylesheet')
+	link(href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300', rel='stylesheet', type='text/css')
+	link#beyond-link(href='assets/css/beyond.min.css', rel='stylesheet')
+	link(href='assets/css/demo.min.css', rel='stylesheet')
+	link(href='assets/css/animate.min.css', rel='stylesheet')
+	link(href='assets/css/float-label.css', rel='stylesheet')
+	link(href='assets/css/public.css', rel='stylesheet')
+	link#skin-link(href='', rel='stylesheet', type='text/css')
+	script(src='assets/js/skins.min.js')
+	script(src='assets/js/bootbox/bootbox.js')
+	script(src='assets/js/jquery.min.js')
+	script.
+		$("#bootbox-confirm").on('click', function () {
+				bootbox.confirm("Are you sure?", function (result) {
+						if (result) {
+								//
+						}
+				});
+		});
+
+	include ./mixin/table.jade
+	include ./mixin/form.jade

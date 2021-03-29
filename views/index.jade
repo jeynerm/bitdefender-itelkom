@@ -1,0 +1,269 @@
+//Vars
+- var pagename = 'Index'
+//---
+doctype html
+html(xmlns='http://www.w3.org/1999/xhtml')
+	include ./common/head.jade
+	link(href='assets/css/dataTables.bootstrap.css', rel='stylesheet')
+	body(onLoad="slotsIni();getlinks()")
+		include ./common/top.jade
+		.main-container.container-fluid
+			.page-container
+				include ./common/menu_facturas.jade
+				.page-content
+					.page-body
+						.btnes.row(style="margin-top:10%;")
+							.col-md-3.col-xs-12
+								center
+									a(href='#', id="bootbox-confirm", data-toggle='modal', rel="tooltip", data-target='.descarga', title="descarga tu antivirus, está disponible para MAC y Windows")
+										.btn1(style='background-color: #00AEEB;')
+											span
+											i.fa.fa-cloud-download(aria-hidden='true')
+								br
+								center
+									p Descargar
+							.col-md-3.col-xs-12
+								center
+									.btn1(style='background-color: #9AC438;')
+										a(href='#', id="bootbox-confirm", data-toggle='modal',rel="tooltip", data-target='.scan', title="Podrás hacer un scan a todos los equipos de la empresa")
+											span
+												i.fa.fa-search(aria-hidden='true')
+								br
+								center
+									p Escanear
+							.col-md-3.col-xs-12
+								center
+									a(href='#', id="bootbox-confirm", data-toggle='modal',rel="tooltip", data-target='.info', onclick='informacion2()', title="Información de las cantidades de licencias y equipos licenciados")
+										.btn1(style='background-color:#E94834;')
+											span
+												i.fa.fa-info(aria-hidden='true')
+								br
+								center
+									p Información
+							.col-md-3.col-xs-12
+								center
+									.btn1(style='background-color:  #F8D649;')
+										a(href='#', , id="bootbox-confirm", data-toggle='modal',rel="tooltip", data-target='.compra' title="Cambiar la cantidad de licencias disponible para tu empresa")
+											span
+												i.fa.fa-bars(aria-hidden='true')
+								br
+								center
+									p Licencias
+	#modal_descarga.modal.fade.modal-primary.descarga(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true', style='display: none;')
+		.modal-dialog.modal-md
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+					h4#myLargeModalLabel.modal-title Detalles del Usuario
+				.modal-body
+					.row
+						.col-md-6
+							.btnes
+								.prueba
+									#windows
+						.col-md-6
+							.btnes
+								.prueba
+									#mac
+	#modal_scan.modal.fade.modal-primary.scan(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true', style='display: none;')
+		.modal-dialog.modal-lg
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+					h4#myLargeModalLabel.modal-title Detalles del Usuario
+				.modal-body
+					.row
+						.col-md-4
+							.btnes
+								.prueba
+									center
+										a(href='#', onclick="scan(2)")
+											.btn1(style='background-color: #00AEEB;')
+												span
+												i.fa.fa-coffee(aria-hidden='true')
+									br
+									center
+										p Escaneo Completo
+						.col-md-4
+							.btnes
+								.prueba
+									center
+										a(href='#', onclick="scan(1)")
+											.btn1(style='background-color: #9AC438;')
+												span
+													i.fa.fa-rocket(aria-hidden='true')
+									br
+									center
+										p Escaneo rapido
+						.col-md-4
+							.btnes
+								.prueba
+									center
+										a(href='#', onclick="scan(3)")
+											.btn1(style='background-color:#E94834;')
+												span
+													i.fa.fa-database(aria-hidden='true')
+									br
+									center
+										p Escaneo Memoria
+	#modal_scan.modal.fade.modal-primary.info(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true', style='display: none;')
+		.modal-dialog.modal-md
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+					h4#myLargeModalLabel.modal-title Detalles del Usuario
+				.modal-body
+					.row#informacion
+						.col-md-6
+							.btnes
+								.prueba
+									center
+										a(href='#', onclick="estado()")
+											.btn1(style='background-color: #00AEEB;')
+												span
+												i.fa.fa-bar-chart(aria-hidden='true')
+									br
+									center
+										p Estado
+						.col-md-6
+							.btnes
+								.prueba
+									center
+										.btn1(style='background-color: #9AC438;')
+											a(href='#', onclick="endpoints()")
+												span
+													i.fa.fa-check-square-o(aria-hidden='true')
+									br
+									center
+										p EndPoint
+	#modal_scan.modal.fade.modal-primary.compra(tabindex='-1', role='dialog', aria-labelledby='myLargeModalLabel', aria-hidden='true', style='display: none;')
+		.modal-dialog.modal-md
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
+					h4#myLargeModalLabel.modal-title Detalles del Usuario
+				.modal-body
+					.row
+						.col-md-12
+							.btnes
+									.col-md-2
+										input.form-control(type="number", id="slots", min="0")
+									.col-md-4
+										button.btn.btn-blue(type="button", onclick="suscripcion()") Cambiar Suscripción
+									.col-md-6
+										p El aumento de licencias tendrá un costo de $3 USD por cada unidad
+									
+						
+
+		include ./common/js.jade
+		script.
+			var slotsIn = 0;
+			function getlinks(){
+				$.post('/api', {option: "get_instalation_links", company_id: localStorage.getItem("company_id")}, function(result, status) {
+					if(status == 'success' && result && result != "") {
+						document.getElementById("windows").innerHTML = 	"<center><a href='"+result.data.result[0].installLinkWindows+"'> <div class='btn1' style='background-color: #00AEEB;'><span></span><i class='fa fa-windows' aria-hidden='true'></i></div></a></center><br><center><p>Windows</p></center>";
+						document.getElementById("mac").innerHTML = 	"<center><a href='"+result.data.result[0].installLinkMac+"'> <div class='btn1' style='background-color: #F8D649;'><span></span><i class='fa fa-apple' aria-hidden='true'></i></div></a></center><br><center><p>MAC</p></center>";
+					} else {
+						alert("Ha ocurrido un error.");
+					}
+					
+				})
+			}
+			
+			function estado(){
+				$.post('/api', {option: "get_licence_info", company_id: localStorage.getItem("company_id")}, function(result, status) {
+					if(status == 'success' && result && result != "") {
+						document.getElementById("informacion").innerHTML = '<table class="table table-hover"><thead class="bordered-darkorange"><tr><th>Fecha de vencimiento</th><th>Licencias Usadas</th><th>Total de Licencias</th></tr></thead><tbody><tr><td>'+result.data.result.expiryDate+'</td><td>'+result.data.result.usedSlots+'</td><td>'+result.data.result.totalSlots+'</td></tr></tbody></table>'
+					} else {
+						alert("Ha ocurrido un error.");
+					}
+					
+				})
+			}
+			function informacion2(){
+				$.post('/api', {option: "get_licence_info", company_id: localStorage.getItem("company_id")}, function(result, status) {
+					if(status == 'success' && result && result != "") {
+						document.getElementById("informacion").innerHTML = '<div class="col-md-6"><div class="btnes"><div class="prueba"><center><a href="#" onclick="estado()"><div style="background-color: #00AEEB;" class="btn1"><span></span><i aria-hidden="true" class="fa fa-bar-chart"></i></div></a></center><br/><center><p>Estado</p></center></div></div></div><div class="col-md-6"><div class="btnes"><div class="prueba"><center><div style="background-color: #9AC438;" class="btn1"><a href="#" onclick="endpoints()"><span><i aria-hidden="true" class="fa fa-check-square-o"></i></span></a></div></center><br/><center><p>EndPoint</p></center></div></div></div>'
+					} else {
+						alert("Ha ocurrido un error.");
+					}
+					
+				})
+			}
+			function slotsIni(){
+				$.post('/api', {option: "get_licence_info", company_id: localStorage.getItem("company_id")}, function(result, status) {
+					slotsIn = result.data.result.totalSlots;
+					$("#slots").val(result.data.result.totalSlots);
+				})
+			}
+			function endpoints(){
+				$.post('/api', {option: "get_endpoint_list", company_id: localStorage.getItem("company_id")}, function(result, status) {
+					if(status == 'success' && result && result != "") {
+						var resul='<table class="table table-hover"><thead class="bordered-darkorange"><tr><th>#</th><th>Equipos</th></thead><tbody>';
+						for(var i=0; i<result.data.result.items.length; i++){
+							resul+='<tr><td>'+(i+1)+'</td>'
+							resul+='<td>'+result.data.result.items[i].name+'<td></tr>';
+						}
+						resul+='</tbody></table>'
+						document.getElementById("informacion").innerHTML = resul;
+					} else {
+						alert("Ha ocurrido un error.");
+					}
+					
+				})
+			}
+			function activar(){
+				$.post('/api', {option: "activate_company", company_id: localStorage.getItem("company_id")}, function(result, status) {
+					if(result) {
+						alert("Se ha activado su cuenta.")
+					} else {
+						alert("Ha ocurrido un error al activar su cuenta o su cuenta ya está activada.");
+					}
+					
+				})
+			}
+			function scan(type){
+				$.post('/api', {option: "create_scan", type: type, company_id: localStorage.getItem("company_id")}, function(result, status) {
+					if(result) {
+						alert("Se ha creado la tarea de Scan.")
+					} else {
+						alert("Ha ocurrido un error al crear la tarea de Scan.");
+					}
+					
+				})
+			}
+			function suspender(){
+				$.post('/api', {option: "suspend_company", company_id: localStorage.getItem("company_id")}, function(result) {
+					if(result) {
+						alert("Se ha suspendido su cuenta.")
+					} else {
+						alert("Ha ocurrido un error al suspender su cuenta o su cuenta ya está suspendida.");
+					}
+					
+				})
+			}
+			function suscripcion(){
+				var slots = $("#slots").val();
+				var resul=slots-slotsIn
+				var ref = "bitdef_"+localStorage.getItem("company_id");
+				
+				console.log("ref:",ref);
+				if(empty(slots)){
+					alert("Complete todos los campos.");
+					return;
+				}
+				if(slots == slotsIn) {
+					alert("Incremente o disminuya el numero de licencias.")
+					return false
+				}
+				if(slots<slotsIn){
+					$.post('/api', {option: "set_monthly_subscription", slots : slots, company_id: localStorage.getItem("company_id")}, function(result) {
+							alert("Se ha disminuido su slots.")					
+					})
+				}else{
+					window.open('http://186.159.114.233:3135/pay_bitdefender?ref='+ref+'&amount='+(resul*3),'_blank');					
+				}
+			}
+			$(document).ready(function(){
+			    $('[rel="tooltip"]').tooltip(); 
+			});

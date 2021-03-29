@@ -1,0 +1,77 @@
+//Vars
+- var pagename = 'Crear Empresa'
+//---
+
+doctype html
+html(xmlns='http://www.w3.org/1999/xhtml')
+	include ./common/head.jade
+	link(href='assets/css/form-control.css', rel='stylesheet')
+	link(href='assets/css/dataTables.bootstrap.css', rel='stylesheet')
+	body
+		include ./common/top.jade
+		.main-container.container-fluid
+			.page-container
+				//include ./common/menu_facturas.j
+				//.page-content
+				.page-body(style="background-image: url('/assets/img/giphy.gif'); background-repeat: no-repeat; background-size: cover;")
+					.row
+						.widget.flat.radius-bordered.col-md-5(style="margin-left:5%;")
+							.widget-header.bg-blue
+								span.widget-caption Login
+							.widget-body(style=" background: rgba(0, 0, 0, 0.4) !important; ")
+								#registration-form
+									.row(style="margin-top:10px;")
+										+form(form[1])
+						.widget.flat.radius-bordered.col-md-5(style="float:right !important; margin-right:5%;")
+							.widget-header.bg-blue
+								span.widget-caption Registration
+							.widget-body(style=" background: rgba(0, 0, 0, 0.4) !important; ")
+								#registration-form
+									.row(style="margin-top:10px;")
+										+form(form[0])
+
+		include ./common/js.jade
+		script.
+			function enviar() {
+				var nit = $("#nit").val();
+				var nempresa = $("#nempresa").val();
+				var email = $("#email").val();
+				var phone = $("#phone").val();
+				var accountFullName = $("#accountFullName").val();
+				var pais = $("#pais").val();
+				var ciudad = $("#ciudad").val();
+				var address = $("#direccion").val();
+				if(empty(nit) || empty(nempresa) || empty(email) || empty(phone) || empty(accountFullName) || empty(pais) || empty(ciudad) || empty(address)) {
+					alert("Complete todos los campos.");
+					return;
+				}
+				$.post('/api', {option: "create_company", documento : nit, name : nempresa, accountEmail : email, phone : phone, accountFullName : accountFullName, pais : pais, ciudad : ciudad, address: address}, function(result, status) {
+					if(status == 'success' && result && result != "") {
+						if(result) alert("Su empresa ha sido registrada en nuestra base de datos. Usted recibira un mail con los datos de ingreso.");
+					} else {
+						alert("Ha ocurrido un error al crear su empresa.");
+					}
+					
+				})
+			}
+			function ingresar() {
+				var user = $("#user").val();
+				var pass = $("#pass").val();
+				
+				if(empty(user) || empty(pass) ) {
+					alert("Complete todos los campos.");
+					return;
+				}
+				$.post('/api', {option: "login_user", username : user, password : pass}, function(result) {
+					if(result.status == true) {
+						localStorage.setItem("username", user);
+						localStorage.setItem("company_id", result.company_id);
+						window.location.replace("/web?page=index");	
+					} else {
+						alert("Usuario o contraseña incorrecta.");
+					}
+					
+				})
+			}
+
+			

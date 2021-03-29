@@ -1,0 +1,14 @@
+mixin table(head, body, tid)
+  table(id="#{tid}") 
+    thead
+      tr
+        each h, i in head
+          th
+            | #{h}
+    tbody
+        each b, i in body
+          tr
+            for name in b
+              th
+                | #{name}
+      

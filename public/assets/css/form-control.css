@@ -1,0 +1,15 @@
+.form-control, select:focus, input:focus{
+  background: rgba(0, 0, 0, 0.2) !important;
+  color:white !important;
+}
+.form-control, select{
+  background: rgba(0, 0, 0, 0.4);
+  color:white;
+}
+.float-label-control{
+  margin-bottom: 2.5%;
+}
+select option{
+  background: black;
+  color:white !important;
+}

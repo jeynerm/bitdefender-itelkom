@@ -1,0 +1,21 @@
+//Vars
+- var pagename = 'Index'
+//---
+
+doctype html
+html(xmlns='http://www.w3.org/1999/xhtml')
+	include ./common/head.jade
+	link(href='assets/css/dataTables.bootstrap.css', rel='stylesheet')
+	body
+		include ./common/top.jade
+		.main-container.container-fluid
+			.page-container
+				include ./common/menu_facturas.jade
+				.page-content
+					include ./common/page_header.jade
+					.page-body
+
+		include ./common/js.jade
+		script.
+
+			
